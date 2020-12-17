@@ -63,7 +63,8 @@
     "read-config-file": "6.0.0",
     "sanitize-filename": "^1.6.3",
     "semver": "^7.3.4",
-    "temp-file": "^3.3.7"
+    "temp-file": "^3.3.7",
+    "@electron/universal": "1.0.4"
   },
   "///": "babel in devDependencies for proton tests",
   "devDependencies": {
