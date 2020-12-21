@@ -199,6 +199,14 @@ module.exports.walkAsync = async function (dirPath) {
       const stat = await fs.lstat(filePath)
       if (stat.isFile()) {
         switch (path.extname(filePath)) {
+          case '': // Binary
+            if (path.basename(filePath)[0] !== '.') {
+              return getFilePathIfBinaryAsync(filePath)
+            } // Else reject hidden file
+            break
+          case '.dylib': // Dynamic library
+          case '.node': // Native node addon
+            return filePath
           case '.cstemp': // Temporary file generated from past codesign
             debuglog('Removing... ' + filePath)
             await fs.unlink(filePath)
