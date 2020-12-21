@@ -44,6 +44,7 @@
   "dependencies": {
     "7zip-bin": "~5.0.3",
     "@develar/schema-utils": "~2.6.5",
+    "@electron/universal": "1.0.4",
     "async-exit-hook": "^2.0.1",
     "bluebird-lst": "^1.0.9",
     "builder-util": "workspace:*",
@@ -63,8 +64,7 @@
     "read-config-file": "6.0.0",
     "sanitize-filename": "^1.6.3",
     "semver": "^7.3.4",
-    "temp-file": "^3.3.7",
-    "@electron/universal": "1.0.4"
+    "temp-file": "^3.3.7"
   },
   "///": "babel in devDependencies for proton tests",
   "devDependencies": {
