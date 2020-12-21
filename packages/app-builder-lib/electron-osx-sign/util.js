@@ -218,7 +218,7 @@ module.exports.walkAsync = async function (dirPath) {
         const forceRemoveExts = [
           '.cstemp' // Temporary file generated from past codesign
         ]
-        if (forceRemoveExts.includes(ext)) {
+        if (forceRemoveExts.includes(path.extname(filePath))) {
           debuglog('Removing... ' + filePath)
           await fs.unlink(filePath)
           return
