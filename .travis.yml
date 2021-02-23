@@ -7,7 +7,7 @@ env:
 
 matrix:
   include:
-    - os: windows
+    - os: linux
       env: TEST_FILES=windows,extraBuildTest,ignoreTest
       node_js: "14"
 
