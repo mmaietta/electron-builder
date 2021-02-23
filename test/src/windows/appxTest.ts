@@ -18,7 +18,7 @@ it.ifDevOrWinCi("AppX", app({
     await ensureDir(targetDir)
     await BluebirdPromise.map(["BadgeLogo.scale-100.png", "BadgeLogo.scale-140.png", "BadgeLogo.scale-180.png"], name => copyTestAsset(`appx-assets/${name}`, path.join(targetDir, name)))
   },
-  signedWin: true,
+  // signedWin: true,
 }))
 
 it.ifDevOrWinCi("auto launch", app({

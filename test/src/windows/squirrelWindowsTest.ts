@@ -10,7 +10,9 @@ test.ifAll.ifNotCiMac("Squirrel.Windows", app({
       compression: "normal",
     }
   }
-}, {signedWin: true}))
+}, {
+  // signedWin: true
+}))
 
 test.ifAll.ifNotCiMac("artifactName", app({
   targets: Platform.WINDOWS.createTarget(["squirrel", "zip"]),

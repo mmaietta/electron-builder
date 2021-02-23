@@ -21,7 +21,7 @@ test("sign nested asar unpacked executables", appThrows({
     asarUnpack: ["assets"],
   }
 }, {
-  signedWin: true,
+  // signedWin: true,
   projectDirCreated: async projectDir => {
     await outputFile(path.join(projectDir, "assets", "nested", "nested", "file.exe"), "invalid PE file")
   },

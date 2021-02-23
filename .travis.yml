@@ -11,17 +11,17 @@ matrix:
       env: TEST_FILES=windows/*,extraBuildTest,ignoreTest,differentialUpdateTest,filesTest,protonTest,
       node_js: "14"
 
-    # - os: osx
-    #   env: TEST_FILES=linux/*,windows/*,BuildTest,extraMetadataTest,globTest,filesTest,ignoreTest,macPackagerTest,protonTest
-    #   node_js: "14"
+    - os: osx
+      env: TEST_FILES=linux/*,windows/*,BuildTest,extraMetadataTest,globTest,filesTest,ignoreTest,macPackagerTest,protonTest
+      node_js: "14"
 
-    # - os: osx
-    #   env: TEST_FILES=CodeSignTest,macArchiveTest,macIconTest
-    #   node_js: "14"
+    - os: osx
+      env: TEST_FILES=CodeSignTest,macArchiveTest,macIconTest
+      node_js: "14"
 
-    # - os: osx
-    #   env: TEST_FILES=masTest,dmgTest
-    #   node_js: "14"
+    - os: osx
+      env: TEST_FILES=masTest,dmgTest
+      node_js: "14"
 
 cache:
   yarn: true

@@ -48,7 +48,7 @@ test.ifAll.ifDevOrWinCi("web installer", async () => {
         },
       },
     }, {
-      signedWin: true,
+      // signedWin: true,
       packed: async context => {
         outDirs.push(context.outDir)
       },
@@ -109,7 +109,7 @@ test.ifAll.ifDevOrWinCi("nsis", async () => {
         },
       },
     }, {
-      signedWin: true,
+      // signedWin: true,
       packed: async context => {
         outDirs.push(context.outDir)
       }
