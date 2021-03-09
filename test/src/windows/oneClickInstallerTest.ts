@@ -25,29 +25,29 @@ function pickSnapshotDefines(defines: any) {
   };
 }
 
-// test.skip("one-click", app({
-//   targets: Platform.WINDOWS.createTarget(["nsis"], Arch.x64),
-//   config: {
-//     publish: {
-//       provider: "bintray",
-//       owner: "actperepo",
-//       package: "TestApp",
-//     },
-//     nsis: {
-//       deleteAppDataOnUninstall: true,
-//       packElevateHelper: false
-//     },
-//   }
-// }, {
-//   signedWin: true,
-//   packed: async context => {
-//     await checkHelpers(context.getResources(Platform.WINDOWS, Arch.x64), false)
-//     await doTest(context.outDir, true, "TestApp Setup", "TestApp", null, false)
-//     await expectUpdateMetadata(context, Arch.x64)
-//     // TODO: verify codesigning
-//     // await expectUpdateMetadata(context, Arch.x64, true)
-//   }
-// }))
+test.skip("one-click", app({
+  targets: Platform.WINDOWS.createTarget(["nsis"], Arch.x64),
+  config: {
+    publish: {
+      provider: "bintray",
+      owner: "actperepo",
+      package: "TestApp",
+    },
+    nsis: {
+      deleteAppDataOnUninstall: true,
+      packElevateHelper: false
+    },
+  }
+}, {
+  signedWin: true,
+  packed: async context => {
+    await checkHelpers(context.getResources(Platform.WINDOWS, Arch.x64), false)
+    await doTest(context.outDir, true, "TestApp Setup", "TestApp", null, false)
+    await expectUpdateMetadata(context, Arch.x64)
+    // TODO: verify codesigning
+    // await expectUpdateMetadata(context, Arch.x64, true)
+  }
+}))
 
 test.ifAll("custom guid", app({
   targets: Platform.WINDOWS.createTarget(["nsis"], Arch.ia32),

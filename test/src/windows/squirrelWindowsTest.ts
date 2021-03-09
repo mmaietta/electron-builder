@@ -3,24 +3,24 @@ import * as path from "path"
 import { CheckingWinPackager } from "../helpers/CheckingPackager"
 import { app, assertPack, copyTestAsset } from "../helpers/packTester"
 
-// test.skip.ifAll.ifNotCiMac("Squirrel.Windows", app({
-//   targets: Platform.WINDOWS.createTarget(["squirrel"]),
-//   config: {
-//     win: {
-//       compression: "normal",
-//     }
-//   }
-// }, {signedWin: true}))
+test.skip.ifAll.ifNotCiMac("Squirrel.Windows", app({
+  targets: Platform.WINDOWS.createTarget(["squirrel"]),
+  config: {
+    win: {
+      compression: "normal",
+    }
+  }
+}, {signedWin: true}))
 
-// test.skip.ifAll.ifNotCiMac("artifactName", app({
-//   targets: Platform.WINDOWS.createTarget(["squirrel", "zip"]),
-//   config: {
-//     win: {
-//       // tslint:disable:no-invalid-template-strings
-//       artifactName: "Test ${name} foo.${ext}",
-//     }
-//   }
-// }))
+test.skip.ifAll.ifNotCiMac("artifactName", app({
+  targets: Platform.WINDOWS.createTarget(["squirrel", "zip"]),
+  config: {
+    win: {
+      // tslint:disable:no-invalid-template-strings
+      artifactName: "Test ${name} foo.${ext}",
+    }
+  }
+}))
 
 // very slow
 test.skip("delta and msi", app({

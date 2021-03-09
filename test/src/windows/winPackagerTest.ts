@@ -5,27 +5,27 @@ import { CheckingWinPackager } from "../helpers/CheckingPackager"
 import { app, appThrows, assertPack, platform } from "../helpers/packTester"
 import { remove } from "fs-extra"
 
-// test.skip.ifWinCi("beta version", app({
-//   targets: Platform.WINDOWS.createTarget(["squirrel", "nsis"]),
-//   config: {
-//     extraMetadata: {
-//       version: "3.0.0-beta.2",
-//     },
-//   }
-// }))
+test.skip.ifWinCi("beta version", app({
+  targets: Platform.WINDOWS.createTarget(["squirrel", "nsis"]),
+  config: {
+    extraMetadata: {
+      version: "3.0.0-beta.2",
+    },
+  }
+}))
 
 test.ifNotCiMac("win zip", app({
   targets: Platform.WINDOWS.createTarget(["zip"]),
 }))
 
-// test.ifNotCiMac.ifAll("zip artifactName", app({
-//   linux: ["appimage"],
-//   win: ["zip"],
-//   config: {
-//     //tslint:disable-next-line:no-invalid-template-strings
-//     artifactName: "${productName}-${version}-${os}-${arch}.${ext}",
-//   },
-// }))
+test.skip.ifNotCiMac.ifAll("zip artifactName", app({
+  linux: ["appimage"],
+  win: ["zip"],
+  config: {
+    //tslint:disable-next-line:no-invalid-template-strings
+    artifactName: "${productName}-${version}-${os}-${arch}.${ext}",
+  },
+}))
 
 test.ifNotCiMac("icon < 256", appThrows(platform(Platform.WINDOWS), {
   projectDirCreated: projectDir => fs.rename(path.join(projectDir, "build", "incorrect.ico"), path.join(projectDir, "build", "icon.ico"))

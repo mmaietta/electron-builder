@@ -31,7 +31,7 @@ function createBuildResourcesTest(packagerOptions: PackagerOptions) {
 }
 
 test.ifAll.ifNotWindows("custom buildResources and output dirs: mac", createBuildResourcesTest({mac: ["dir"]}))
-// test.ifNotMac.ifDevOrWinCi("custom buildResources and output dirs: win", createBuildResourcesTest({win: ["nsis"]}))
+test.skip.ifNotMac.ifDevOrWinCi("custom buildResources and output dirs: win", createBuildResourcesTest({win: ["nsis"]}))
 test.ifAll.ifNotWindows("custom buildResources and output dirs: linux", createBuildResourcesTest({linux: ["appimage"]}))
 
 test.ifAll.ifLinuxOrDevMac("prepackaged", app({
