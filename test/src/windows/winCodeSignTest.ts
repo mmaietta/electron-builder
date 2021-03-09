@@ -1,5 +1,5 @@
 import { DIR_TARGET, Platform } from "electron-builder"
-import { outputFile } from "fs-extra"
+// import { outputFile } from "fs-extra"
 import * as path from "path"
 import { CheckingWinPackager } from "../helpers/CheckingPackager"
 import { app, appThrows } from "../helpers/packTester"
@@ -14,18 +14,18 @@ test("parseDn", () => {
 
 const windowsDirTarget = Platform.WINDOWS.createTarget(["dir"])
 
-test("sign nested asar unpacked executables", appThrows({
-  targets: Platform.WINDOWS.createTarget(DIR_TARGET),
-  config: {
-    publish: "never",
-    asarUnpack: ["assets"],
-  }
-}, {
-  signedWin: true,
-  projectDirCreated: async projectDir => {
-    await outputFile(path.join(projectDir, "assets", "nested", "nested", "file.exe"), "invalid PE file")
-  },
-}, error => expect(error.message).toContain("Unrecognized file type")))
+// test("sign nested asar unpacked executables", appThrows({
+//   targets: Platform.WINDOWS.createTarget(DIR_TARGET),
+//   config: {
+//     publish: "never",
+//     asarUnpack: ["assets"],
+//   }
+// }, {
+//   signedWin: true,
+//   projectDirCreated: async projectDir => {
+//     await outputFile(path.join(projectDir, "assets", "nested", "nested", "file.exe"), "invalid PE file")
+//   },
+// }, error => expect(error.message).toContain("Unrecognized file type")))
 
 function testCustomSign(sign: any) {
   return app({
@@ -44,6 +44,8 @@ function testCustomSign(sign: any) {
   })
 }
 
+test.ifAll.ifNotCiMac("certificateFile/password - sign as async/await", testCustomSign(async () => { return }))
+test.ifAll.ifNotCiMac("certificateFile/password - sign as Promise", testCustomSign(() => Promise.resolve()))
 test.ifAll.ifNotCiMac("certificateFile/password - sign as function", testCustomSign(require("../helpers/customWindowsSign").default))
 test.ifAll.ifNotCiMac("certificateFile/password - sign as path", testCustomSign(path.join(__dirname, "../helpers/customWindowsSign")))
 
