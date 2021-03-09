@@ -18,7 +18,7 @@ test.ifNotCiMac("assisted", app({
     },
   }
 }, {
-  // signedWin: true,
+  signedWin: true,
   projectDirCreated: projectDir => copyTestAsset("license.txt", path.join(projectDir, "build", "license.txt")),
 }))
 

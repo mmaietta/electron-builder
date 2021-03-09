@@ -12,7 +12,7 @@ import * as path from "path"
 import { TmpDir } from "temp-file"
 import { assertPack, removeUnstableProperties } from "../helpers/packTester"
 import { tuneTestUpdater, writeUpdateConfig } from "../helpers/updaterTestUtil"
-import { nsisDifferentialUpdateFakeSnapshot, nsisWebDifferentialUpdateTestFakeSnapshot } from "../helpers/differentialUpdateTestSnapshotData"
+import { nsisWebDifferentialUpdateTestFakeSnapshot } from "../helpers/differentialUpdateTestSnapshotData"
 import { TestAppAdapter } from "../helpers/TestAppAdapter"
 
 /*
@@ -48,7 +48,7 @@ test.ifAll.ifDevOrWinCi("web installer", async () => {
         },
       },
     }, {
-      // signedWin: true,
+      signedWin: true,
       packed: async context => {
         outDirs.push(context.outDir)
       },
@@ -90,68 +90,68 @@ test.ifAll.ifDevOrWinCi("web installer", async () => {
   await testBlockMap(outDirs[0], path.join(outDirs[1], "nsis-web"), NsisUpdater, "win-unpacked", Platform.WINDOWS)
 })
 
-test.ifAll.ifDevOrWinCi("nsis", async () => {
-  let outDirs: Array<string> = []
+// test.skip.ifAll.ifDevOrWinCi("nsis", async () => {
+//   let outDirs: Array<string> = []
 
-  async function buildApp(version: string) {
-    await assertPack("test-app-one", {
-      targets: Platform.WINDOWS.createTarget(["nsis"], Arch.x64),
-      config: {
-        extraMetadata: {
-          version,
-        },
-        // package in any case compressed, customization is explicitly disabled - "do not allow to change compression level to avoid different packages"
-        compression: process.env.COMPRESSION as any || "store",
-        publish: {
-          provider: "s3",
-          bucket: "develar",
-          path: "test",
-        },
-      },
-    }, {
-      // signedWin: true,
-      packed: async context => {
-        outDirs.push(context.outDir)
-      }
-    })
-  }
+//   async function buildApp(version: string) {
+//     await assertPack("test-app-one", {
+//       targets: Platform.WINDOWS.createTarget(["nsis"], Arch.x64),
+//       config: {
+//         extraMetadata: {
+//           version,
+//         },
+//         // package in any case compressed, customization is explicitly disabled - "do not allow to change compression level to avoid different packages"
+//         compression: process.env.COMPRESSION as any || "store",
+//         publish: {
+//           provider: "s3",
+//           bucket: "develar",
+//           path: "test",
+//         },
+//       },
+//     }, {
+//       signedWin: true,
+//       packed: async context => {
+//         outDirs.push(context.outDir)
+//       }
+//     })
+//   }
 
-  if (process.env.__SKIP_BUILD == null) {
-    await buildApp(OLD_VERSION_NUMBER)
+//   if (process.env.__SKIP_BUILD == null) {
+//     await buildApp(OLD_VERSION_NUMBER)
 
-    const tmpDir = new TmpDir("differential-updater-test")
-    try {
-      // move dist temporarily out of project dir
-      const oldDir = await tmpDir.getTempDir()
-      await move(outDirs[0], oldDir)
-      outDirs[0] = oldDir
+//     const tmpDir = new TmpDir("differential-updater-test")
+//     try {
+//       // move dist temporarily out of project dir
+//       const oldDir = await tmpDir.getTempDir()
+//       await move(outDirs[0], oldDir)
+//       outDirs[0] = oldDir
 
-      await buildApp("1.0.1")
-    }
-    catch (e) {
-      await tmpDir.cleanup()
-      throw e
-    }
+//       await buildApp("1.0.1")
+//     }
+//     catch (e) {
+//       await tmpDir.cleanup()
+//       throw e
+//     }
 
-    // move old dist to new project as oldDist - simplify development (no need to guess where old dist located in the temp fs)
-    const oldDir = path.join(outDirs[1], "..", "oldDist")
-    await move(outDirs[0], oldDir)
-    outDirs[0] = oldDir
+//     // move old dist to new project as oldDist - simplify development (no need to guess where old dist located in the temp fs)
+//     const oldDir = path.join(outDirs[1], "..", "oldDist")
+//     await move(outDirs[0], oldDir)
+//     outDirs[0] = oldDir
 
-    await move(path.join(oldDir, `Test App ßW Setup ${OLD_VERSION_NUMBER}.exe`), path.join(getTestUpdaterCacheDir(oldDir), testAppCacheDirName, "installer.exe"))
-    await move(path.join(oldDir, "Test App ßW Setup 1.0.0.exe.blockmap"), path.join(outDirs[1], "Test App ßW Setup 1.0.0.exe.blockmap"))
-  }
-  else {
-    nsisDifferentialUpdateFakeSnapshot()
+//     await move(path.join(oldDir, `Test App ßW Setup ${OLD_VERSION_NUMBER}.exe`), path.join(getTestUpdaterCacheDir(oldDir), testAppCacheDirName, "installer.exe"))
+//     await move(path.join(oldDir, "Test App ßW Setup 1.0.0.exe.blockmap"), path.join(outDirs[1], "Test App ßW Setup 1.0.0.exe.blockmap"))
+//   }
+//   else {
+//     nsisDifferentialUpdateFakeSnapshot()
 
-    outDirs = [
-      path.join(process.env.TEST_APP_TMP_DIR!!, "oldDist"),
-      path.join(process.env.TEST_APP_TMP_DIR!!, "dist"),
-    ]
-  }
+//     outDirs = [
+//       path.join(process.env.TEST_APP_TMP_DIR!!, "oldDist"),
+//       path.join(process.env.TEST_APP_TMP_DIR!!, "dist"),
+//     ]
+//   }
 
-  await testBlockMap(outDirs[0], outDirs[1], NsisUpdater, "win-unpacked", Platform.WINDOWS)
-})
+//   await testBlockMap(outDirs[0], outDirs[1], NsisUpdater, "win-unpacked", Platform.WINDOWS)
+// })
 
 async function testLinux(arch: Arch) {
   process.env.TEST_UPDATER_ARCH = Arch[arch]

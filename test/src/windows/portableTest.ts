@@ -13,17 +13,17 @@ test.ifAll.ifNotCiMac("portable", app({
   }
 }))
 
-test.ifAll.ifDevOrWinCi("portable zip", app({
-  targets: Platform.WINDOWS.createTarget("portable"),
-  config: {
-    publish: null,
-    portable: {
-      useZip: true,
-      unpackDirName: "0ujssxh0cECutqzMgbtXSGnjorm",
-    },
-    compression: "normal",
-  }
-}))
+// test.ifAll.ifDevOrWinCi("portable zip", app({
+//   targets: Platform.WINDOWS.createTarget("portable"),
+//   config: {
+//     publish: null,
+//     portable: {
+//       useZip: true,
+//       unpackDirName: "0ujssxh0cECutqzMgbtXSGnjorm",
+//     },
+//     compression: "normal",
+//   }
+// }))
 
 test.ifAll.ifNotCi("portable zip several archs", app({
   targets: Platform.WINDOWS.createTarget("portable", Arch.ia32, Arch.x64),
