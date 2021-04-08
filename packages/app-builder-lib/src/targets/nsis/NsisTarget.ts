@@ -232,7 +232,7 @@ export class NsisTarget extends Target {
       defines.REQUEST_EXECUTION_LEVEL = portableOptions.requestExecutionLevel || "user"
       const { splashImage, unpackDirName } = portableOptions
       if (unpackDirName !== false) {
-        defines.UNPACK_DIR_NAME = typeof unpackDirName === 'string' ? unpackDirName : (await executeAppBuilder(["ksuid"]))
+        defines.UNPACK_DIR_NAME = (typeof unpackDirName === 'string' && unpackDirName) ? unpackDirName : (await executeAppBuilder(["ksuid"]))
       }
       if (splashImage != null) {
         defines.SPLASH_IMAGE = path.resolve(packager.projectDir, splashImage)
