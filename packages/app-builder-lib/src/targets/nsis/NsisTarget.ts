@@ -230,12 +230,12 @@ export class NsisTarget extends Target {
     if (isPortable) {
       const portableOptions = options as PortableOptions
       defines.REQUEST_EXECUTION_LEVEL = portableOptions.requestExecutionLevel || "user"
-      if (portableOptions.unpackDirName !== false) {
-        defines.UNPACK_DIR_NAME = portableOptions.unpackDirName || (await executeAppBuilder(["ksuid"]))
+      const { splashImage, unpackDirName } = portableOptions
+      if (unpackDirName !== false) {
+        defines.UNPACK_DIR_NAME = typeof unpackDirName === 'string' ? unpackDirName : (await executeAppBuilder(["ksuid"]))
       }
-
-      if (portableOptions.splashImage != null) {
-        defines.SPLASH_IMAGE = path.resolve(packager.projectDir, portableOptions.splashImage)
+      if (splashImage != null) {
+        defines.SPLASH_IMAGE = path.resolve(packager.projectDir, splashImage)
       }
     }
     else {
