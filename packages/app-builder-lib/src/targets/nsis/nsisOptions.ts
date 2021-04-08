@@ -170,10 +170,11 @@ export interface PortableOptions extends TargetSpecificOptions, CommonNsisOption
 
   /**
    * The unpack directory name in [TEMP](https://www.askvg.com/where-does-windows-store-temporary-files-and-how-to-change-temp-folder-location/) directory.
+   * Use `false` to let Windows generate the folder name at runtime.
    *
    * Defaults to [uuid](https://github.com/segmentio/ksuid) of build (changed on each build of portable executable).
    */
-  readonly unpackDirName?: string
+  readonly unpackDirName?: string | boolean
 
   /**
    * The image to show while the portable executable is extracting. This image must be a bitmap (`.bmp`) image.

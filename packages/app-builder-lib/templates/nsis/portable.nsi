@@ -30,7 +30,11 @@ Section
     HideWindow
   !endif
 
-  StrCpy $INSTDIR "$TEMP\${UNPACK_DIR_NAME}"
+  StrCpy $INSTDIR "$PLUGINSDIR\app"
+  !ifdef UNPACK_DIR_NAME
+    StrCpy $INSTDIR "$TEMP\${UNPACK_DIR_NAME}"
+  !endif
+
   RMDir /r $INSTDIR
   SetOutPath $INSTDIR
 
