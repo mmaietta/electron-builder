@@ -1,0 +1,25 @@
+name: Test
+
+on:
+  push:
+    paths:
+      - 'docker/'
+  pull_request:
+    paths:
+      - 'docker/'
+    branches:
+      - master
+
+jobs:
+  test-docker:
+    using: 'docker'
+    image: 'docker/base/Dockerfile'
+    env:
+      TEST_FILES: HoistedNodeModuleTest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+      - name: Install dependencies
+        run: pnpm i
+      - name: Run tests
+        run: pnpm test
