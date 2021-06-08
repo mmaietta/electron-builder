@@ -64,7 +64,8 @@ export class ArchiveTarget extends Target {
       }
       await archive(format, artifactPath, dirToArchive, archiveOptions)
 
-      if (this.isWriteUpdateInfo && format === "zip") {
+      // Disabled for mac zips: https://github.com/electron-userland/electron-builder/issues/4299
+      if (this.isWriteUpdateInfo && format === "zip" && !isMac) {
         updateInfo = await appendBlockmap(artifactPath)
       }
     }
