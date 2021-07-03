@@ -13,7 +13,7 @@
 		"vendor"
 	],
 	"dependencies": {
-		"app-builder-lib": "22.11.7",
+		"app-builder-lib": "22.11.8",
 		"builder-util": "22.11.7",
 		"builder-util-runtime": "8.7.6",
 		"fs-extra": "^10.0.0",
