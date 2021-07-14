@@ -35,7 +35,7 @@ jobs:
       - name: create versions PR & prepare publish
         uses: changesets/action@master
         with:
-          version: pnpm changelog && pnpx changeset version
+          version: pnpm changelog && pnpm bump-version
           commit: 'chore: Bump versions'
           title: 'chore: Bump versions'
           publish: pnpm release
