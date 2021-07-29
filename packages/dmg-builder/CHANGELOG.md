@@ -1,5 +1,12 @@
 # dmg-builder
 
+## 22.11.11
+
+### Patch Changes
+
+- Updated dependencies [4a177dc0]
+  - app-builder-lib@22.11.11
+
 ## 22.11.10
 
 ### Patch Changes
