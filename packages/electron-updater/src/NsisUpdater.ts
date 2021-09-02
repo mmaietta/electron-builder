@@ -140,13 +140,13 @@ export class NsisUpdater extends BaseUpdater {
       }
 
       let blockmapFileUrls: URL[]
-      if (fileInfo.updateFileUrls) {
-        const oldBlockmap = fileInfo.updateFileUrls.old.find(it => it.name.endsWith(".blockmap"))
-        const newBlockmap = fileInfo.updateFileUrls.new.find(it => it.name.endsWith(".blockmap"))
+      if (fileInfo.updateFileInfo) {
+        const oldBlockmap = fileInfo.updateFileInfo.current.find(it => it.name.endsWith(".blockmap"))
+        const newBlockmap = fileInfo.updateFileInfo.next.find(it => it.name.endsWith(".blockmap"))
         if (!oldBlockmap || !newBlockmap) {
           throw new Error(`Blockmap file not found (old: [name: "${oldBlockmap?.name}" url: "${oldBlockmap?.url}"] new: [name: "${newBlockmap?.name}" url: "${newBlockmap?.url}"])`)
         }
-        blockmapFileUrls = [oldBlockmap.url, newBlockmap.url]
+        blockmapFileUrls = [oldBlockmap.url, newBlockmap.url].map(it => new URL(it))
       } else {
         blockmapFileUrls = blockmapFiles(fileInfo.url, this.app.version, downloadUpdateOptions.updateInfoAndProvider.info.version)
       }

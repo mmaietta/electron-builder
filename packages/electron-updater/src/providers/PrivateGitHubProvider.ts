@@ -1,4 +1,4 @@
-import { CancellationToken, GithubOptions, HttpError, newError, UpdateInfo } from "builder-util-runtime"
+import { CancellationToken, GithubOptions, HttpError, newError, safeStringifyJson, UpdateInfo } from "builder-util-runtime"
 import { OutgoingHttpHeaders, RequestOptions } from "http"
 import { load } from "js-yaml"
 import * as path from "path"
@@ -10,8 +10,8 @@ import { ResolvedUpdateFileInfo } from "../main"
 import { getFileList, ProviderRuntimeOptions } from "./Provider"
 
 export interface PrivateGitHubUpdateInfo extends UpdateInfo {
-  assets: Array<Asset>
-  currentVersionAssets: Array<Asset>
+  next: Array<Asset>
+  current: Array<Asset>
 }
 
 export class PrivateGitHubProvider extends BaseGitHubProvider<PrivateGitHubUpdateInfo> {
@@ -30,9 +30,10 @@ export class PrivateGitHubProvider extends BaseGitHubProvider<PrivateGitHubUpdat
     const channelFile = getChannelFilename(this.getDefaultChannelName())
 
     const releaseInfo = await this.getLatestVersionInfo(cancellationToken)
-    const currentInfo = await this.getVersionInfo(this.updater.currentVersion.version, cancellationToken)
+    const currentInfo = await this.getCurrentVersionInfo(this.updater.currentVersion.version, cancellationToken)
 
     const asset = releaseInfo.assets.find(it => it.name === channelFile)
+    // console.log(safeStringifyJson(asset))  
     if (asset == null) {
       // html_url must be always, but just to be sure
       throw newError(`Cannot find ${channelFile} in the release ${releaseInfo.html_url || releaseInfo.name}`, "ERR_UPDATER_CHANNEL_FILE_NOT_FOUND")
@@ -48,9 +49,11 @@ export class PrivateGitHubProvider extends BaseGitHubProvider<PrivateGitHubUpdat
       }
       throw e
     }
-
-    ;(result as PrivateGitHubUpdateInfo).assets = releaseInfo.assets
-    ;(result as PrivateGitHubUpdateInfo).currentVersionAssets = currentInfo.assets
+    
+    
+    ;(result as PrivateGitHubUpdateInfo).current = currentInfo.assets
+    ;(result as PrivateGitHubUpdateInfo).next = releaseInfo.assets
+    console.log(safeStringifyJson(result))
 
     return result
   }
@@ -87,7 +90,7 @@ export class PrivateGitHubProvider extends BaseGitHubProvider<PrivateGitHubUpdat
     }
   }
 
-  async getVersionInfo(version: string, cancellationToken: CancellationToken): Promise<ReleaseInfo> {
+  async getCurrentVersionInfo(version: string, cancellationToken: CancellationToken): Promise<ReleaseInfo> {
     const url = this.getVersionUrl(version)
     try {
       const version = JSON.parse((await this.httpRequest(url, this.configureHeaders("application/vnd.github.v3+json"), cancellationToken))!)
@@ -103,24 +106,21 @@ export class PrivateGitHubProvider extends BaseGitHubProvider<PrivateGitHubUpdat
 
   private getVersionUrl(version: string): URL {
     const tagName = this.options.vPrefixedTagName === false ? version : `v${version}`
-    return new URL(`/repos/${this.options.owner}/${this.options.repo}/releases/tags/${tagName}`, this.baseApiUrl)
+    return newUrlFromBase(`/repos/${this.options.owner}/${this.options.repo}/releases/tags/${tagName}`, this.baseApiUrl)
   }
 
   resolveFiles(updateInfo: PrivateGitHubUpdateInfo): Array<ResolvedUpdateFileInfo> {
     return getFileList(updateInfo).map(it => {
       const name = path.posix.basename(it.url).replace(/ /g, "-")
-      const asset = updateInfo.assets.find(it => it != null && it.name === name)
+      const asset = updateInfo.next.find(it => it != null && it.name === name)
       if (asset == null) {
-        throw newError(`Cannot find asset "${name}" in: ${JSON.stringify(updateInfo.assets, null, 2)}`, "ERR_UPDATER_ASSET_NOT_FOUND")
+        throw newError(`Cannot find asset "${name}" in: ${JSON.stringify(updateInfo.next, null, 2)}`, "ERR_UPDATER_ASSET_NOT_FOUND")
       }
 
       return {
         url: new URL(asset.url),
         info: it,
-        updateFileUrls: {
-          new: updateInfo.assets.map(it => ({ name: it.name, url: new URL(it.url) })),
-          old: updateInfo.currentVersionAssets.map(it => ({ name: it.name, url: new URL(it.url) })),
-        },
+        updateFileInfo: updateInfo,
       }
     })
   }
