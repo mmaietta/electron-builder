@@ -1,7 +1,7 @@
 import { AllPublishOptions, newError, safeStringifyJson } from "builder-util-runtime"
 import { stat } from "fs-extra"
 import { createReadStream } from "fs"
-import { createServer, IncomingMessage, ServerResponse } from "http"
+import { createServer, IncomingMessage, Server, ServerResponse } from "http"
 import { AddressInfo } from "net"
 import { AppAdapter } from "./AppAdapter"
 import { AppUpdater, DownloadUpdateOptions } from "./AppUpdater"
@@ -9,11 +9,14 @@ import { ResolvedUpdateFileInfo, UpdateDownloadedEvent } from "./main"
 import { findFile } from "./providers/Provider"
 import AutoUpdater = Electron.AutoUpdater
 import { execFileSync } from "child_process"
+import crypto from "crypto"
 
 export class MacUpdater extends AppUpdater {
   private readonly nativeUpdater: AutoUpdater = require("electron").autoUpdater
 
   private squirrelDownloadedUpdate = false
+
+  private server?: Server
 
   constructor(options?: AllPublishOptions, app?: AppAdapter) {
     super(options, app)
@@ -84,25 +87,51 @@ export class MacUpdater extends AppUpdater {
     const log = this._logger
     const logContext = `fileToProxy=${zipFileInfo.url.href}`
     this.debug(`Creating proxy server for native Squirrel.Mac (${logContext})`)
-    const server = createServer()
+    if (typeof this.server !== "undefined") {
+      this.server.close()
+    }
+    this.server = createServer()
     this.debug(`Proxy server for native Squirrel.Mac is created (${logContext})`)
-    server.on("close", () => {
+    this.server.on("close", () => {
       log.info(`Proxy server for native Squirrel.Mac is closed (${logContext})`)
     })
 
     // must be called after server is listening, otherwise address is null
-    function getServerUrl(): string {
-      const address = server.address()
+    const getServerUrl = (): string => {
+      const address = this.server!.address()
       if (typeof address === "string") {
         return address
       }
-      return `${address?.address}:${address?.port}`
+      return `http://127.0.0.1:${address?.port}`
     }
 
     return await new Promise<Array<string>>((resolve, reject) => {
+      const pass = crypto.randomBytes(64).toString("base64").replace(/\//g, "_").replace(/\+/g, "-")
+      const authInfo = Buffer.from(`autoupdater:${pass}`, "base64")
+
       // insecure random is ok
       const fileUrl = `/${Date.now().toString(16)}-${Math.floor(Math.random() * 9999).toString(16)}.zip`
-      server.on("request", (request: IncomingMessage, response: ServerResponse) => {
+      this.server!.on("request", (request: IncomingMessage, response: ServerResponse) => {
+        // check for basic auth header
+        if (!request.headers.authorization || request.headers.authorization.indexOf("Basic ") === -1) {
+          response.statusCode = 401
+          response.statusMessage = "Invalid Authentication Credentials"
+          response.end()
+          log.warn("No authenthication info")
+        }
+
+        // verify auth credentials
+        const base64Credentials = request.headers.authorization!.split(" ")[1]
+        const credentials = Buffer.from(base64Credentials, "base64").toString("ascii")
+        const [username, password] = credentials.split(":")
+        if (username !== "autoupdater" || password !== pass) {
+          response.statusCode = 401
+          response.statusMessage = "Invalid Authentication Credentials"
+          response.end()
+          log.warn("Invalid authenthication credentials")
+          return
+        }
+
         const requestUrl = request.url!
         log.info(`${requestUrl} requested`)
         if (requestUrl === "/") {
@@ -123,13 +152,9 @@ export class MacUpdater extends AppUpdater {
 
         let errorOccurred = false
         response.on("finish", () => {
-          try {
-            setImmediate(() => server.close())
-          } finally {
-            if (!errorOccurred) {
-              this.nativeUpdater.removeListener("error", reject)
-              resolve([])
-            }
+          if (!errorOccurred) {
+            this.nativeUpdater.removeListener("error", reject)
+            resolve([])
           }
         })
 
@@ -153,11 +178,15 @@ export class MacUpdater extends AppUpdater {
       })
 
       this.debug(`Proxy server for native Squirrel.Mac is starting to listen (${logContext})`)
-      server.listen(0, "127.0.0.1", () => {
+
+      this.server!.listen(0, "127.0.0.1", () => {
         this.debug(`Proxy server for native Squirrel.Mac is listening (address=${getServerUrl()}, ${logContext})`)
         this.nativeUpdater.setFeedURL({
           url: getServerUrl(),
-          headers: { "Cache-Control": "no-cache" },
+          headers: {
+            "Cache-Control": "no-cache",
+            Authorization: `Basic ${authInfo.toString("ascii")}`,
+          },
         })
 
         // The update has been downloaded and is ready to be served to Squirrel
@@ -175,6 +204,9 @@ export class MacUpdater extends AppUpdater {
   }
 
   quitAndInstall(): void {
+    if (typeof this.server !== "undefined") {
+      this.server.close()
+    }
     if (this.squirrelDownloadedUpdate) {
       // update already fetched by Squirrel, it's ready to install
       this.nativeUpdater.quitAndInstall()
