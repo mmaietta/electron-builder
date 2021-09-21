@@ -157,9 +157,6 @@ Define <code>GH_TOKEN</code> environment variable.</p>
 <p><code id="GithubOptions-protocol">protocol</code> = <code>https</code> “https” | “http” | “undefined” - The protocol. GitHub Publisher supports only <code>https</code>.</p>
 </li>
 <li>
-<p><code id="GithubOptions-token">token</code> String | “undefined” - The access token to support auto-update from private github repositories. Never specify it in the configuration files. Only for <a href="/auto-update#appupdatersetfeedurloptions">setFeedURL</a>.</p>
-</li>
-<li>
 <p><code id="GithubOptions-private">private</code> Boolean | “undefined” - Whether to use private github auto-update provider if <code>GH_TOKEN</code> environment variable is defined. See <a href="/auto-update#private-github-update-repo">Private GitHub Update Repo</a>.</p>
 </li>
 <li>
@@ -239,7 +236,7 @@ Define <code>BITBUCKET_TOKEN</code> environment variable.</p>
 <ul>
 <li><strong><code id="BitbucketOptions-provider">provider</code></strong> “bitbucket” - The provider. Must be <code>bitbucket</code>.</li>
 <li><strong><code id="BitbucketOptions-owner">owner</code></strong> String - Repository owner</li>
-<li><strong><code id="BitbucketOptions-slug">slug</code></strong> String - Repository slug/name</li>
+<li><strong><code id="BitbucketOptions-repo">repo</code></strong> String - Repository name</li>
 <li><code id="BitbucketOptions-channel">channel</code> = <code>latest</code> String | “undefined” - The channel.</li>
 </ul>
 <p>Inherited from <code>PublishConfiguration</code>:</p>

@@ -1,8 +1,7 @@
 import BluebirdPromise from "bluebird-lst"
 import { Arch, log, safeStringifyJson, serializeToYaml } from "builder-util"
-import { GenericServerOptions, PublishConfiguration, UpdateInfo, WindowsUpdateInfo } from "builder-util-runtime"
+import { GenericServerOptions, PublishConfiguration, UpdateInfo } from "builder-util-runtime"
 import { outputFile, outputJson, readFile } from "fs-extra"
-import { Lazy } from "lazy-val"
 import * as path from "path"
 import * as semver from "semver"
 import { Platform } from "../core"
@@ -106,39 +105,26 @@ export async function createUpdateInfoTasks(event: ArtifactCreated, _publishConf
 
   const outDir = event.target!.outDir
   const version = packager.appInfo.version
-  const sha2 = new Lazy<string>(() => hashFile(event.file, "sha256", "hex"))
   const isMac = packager.platform === Platform.MAC
   const createdFiles = new Set<string>()
   const sharedInfo = await createUpdateInfo(version, event, await getReleaseInfo(packager))
   const tasks: Array<UpdateInfoFileTask> = []
   const electronUpdaterCompatibility = packager.platformSpecificBuildOptions.electronUpdaterCompatibility || packager.config.electronUpdaterCompatibility || ">=2.15"
   for (const publishConfiguration of publishConfigs) {
-    const isBintray = publishConfiguration.provider === "bintray"
     let dir = outDir
-    // Bintray uses different variant of channel file info, better to generate it to a separate dir by always
-    if (isBintray || (publishConfigs.length > 1 && publishConfiguration !== publishConfigs[0])) {
+    if (publishConfigs.length > 1 && publishConfiguration !== publishConfigs[0]) {
       dir = path.join(outDir, publishConfiguration.provider)
     }
 
     let isElectronUpdater1xCompatibility = computeIsisElectronUpdater1xCompatibility(electronUpdaterCompatibility, publishConfiguration, packager.info)
 
     let info = sharedInfo
-    // noinspection JSDeprecatedSymbols
-    if (isElectronUpdater1xCompatibility && packager.platform === Platform.WINDOWS) {
-      info = {
-        ...info,
-      }
-      // noinspection JSDeprecatedSymbols
-      ;(info as WindowsUpdateInfo).sha2 = await sha2.value
-    }
-
     if (event.safeArtifactName != null && publishConfiguration.provider === "github") {
       const newFiles = info.files.slice()
       newFiles[0].url = event.safeArtifactName
       info = {
         ...info,
         files: newFiles,
-        path: event.safeArtifactName,
       }
     }
 
@@ -149,7 +135,7 @@ export async function createUpdateInfoTasks(event: ArtifactCreated, _publishConf
         await writeOldMacInfo(publishConfiguration, outDir, dir, channel, createdFiles, version, packager)
       }
 
-      const updateInfoFile = path.join(dir, (isBintray ? `${version}_` : "") + getUpdateInfoFileName(channel, packager, event.arch))
+      const updateInfoFile = path.join(dir, getUpdateInfoFileName(channel, packager, event.arch))
       if (createdFiles.has(updateInfoFile)) {
         continue
       }

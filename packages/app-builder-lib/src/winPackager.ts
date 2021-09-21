@@ -1,6 +1,5 @@
 import BluebirdPromise from "bluebird-lst"
 import { Arch, asArray, InvalidConfigurationError, log, use, executeAppBuilder } from "builder-util"
-import { parseDn } from "builder-util-runtime"
 import { CopyFileTransformer, FileTransformer, walk } from "builder-util/out/fs"
 import { createHash } from "crypto"
 import { readdir } from "fs/promises"
@@ -97,7 +96,7 @@ export class WinPackager extends PlatformPackager<WindowsConfiguration> {
     }
 
     const certInfo = await this.lazyCertInfo.value
-    return certInfo == null ? null : [certInfo.commonName]
+    return certInfo == null ? null : [certInfo.bloodyMicrosoftSubjectDn]
   })
 
   readonly lazyCertInfo = new Lazy<CertificateInfo | null>(async () => {
@@ -109,7 +108,6 @@ export class WinPackager extends PlatformPackager<WindowsConfiguration> {
     if ("subject" in cscInfo) {
       const bloodyMicrosoftSubjectDn = cscInfo.subject
       return {
-        commonName: parseDn(bloodyMicrosoftSubjectDn).get("CN")!,
         bloodyMicrosoftSubjectDn,
       }
     }

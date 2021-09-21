@@ -14,7 +14,6 @@ export {
   configureRequestUrl,
 } from "./httpExecutor"
 export {
-  BintrayOptions,
   CustomPublishOptions,
   GenericServerOptions,
   GithubOptions,
@@ -31,7 +30,7 @@ export {
   AllPublishOptions,
 } from "./publishOptions"
 export { UpdateInfo, UpdateFileInfo, WindowsUpdateInfo, BlockMapDataHolder, PackageFileInfo, ReleaseNoteInfo } from "./updateInfo"
-export { parseDn } from "./rfc2253Parser"
+export * from "./rfc2253Parser"
 export { UUID } from "./uuid"
 export { ProgressCallbackTransform, ProgressInfo } from "./ProgressCallbackTransform"
 export { parseXml, XElement } from "./xml"

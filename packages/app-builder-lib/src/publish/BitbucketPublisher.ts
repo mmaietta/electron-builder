@@ -7,7 +7,7 @@ import { configureRequestOptions, HttpExecutor } from "builder-util-runtime"
 import * as FormData from "form-data"
 import { readFile } from "fs/promises"
 export class BitbucketPublisher extends HttpPublisher {
-  readonly providerName = "bitbucket"
+  readonly providerName = "Bitbucket"
   readonly hostname = "api.bitbucket.org"
 
   private readonly info: BitbucketOptions
@@ -23,7 +23,7 @@ export class BitbucketPublisher extends HttpPublisher {
     }
     this.info = info
     this.auth = BitbucketPublisher.convertAppPassword(this.info.owner, token)
-    this.basePath = `/2.0/repositories/${this.info.owner}/${this.info.slug}/downloads`
+    this.basePath = `/2.0/repositories/${this.info.owner}/${this.info.repo}/downloads`
   }
 
   protected doUpload(
@@ -56,8 +56,8 @@ export class BitbucketPublisher extends HttpPublisher {
   }
 
   toString() {
-    const { owner, slug, channel } = this.info
-    return `Bitbucket (owner: ${owner}, slug: ${slug}, channel: ${channel})`
+    const { owner, repo, channel } = this.info
+    return `Bitbucket (owner: ${owner}, repo: ${repo}, channel: ${channel})`
   }
 
   static convertAppPassword(owner: string, token: string) {

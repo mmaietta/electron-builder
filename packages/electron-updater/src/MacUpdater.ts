@@ -2,7 +2,6 @@ import { AllPublishOptions, newError, safeStringifyJson } from "builder-util-run
 import { stat } from "fs-extra"
 import { createReadStream } from "fs"
 import { createServer, IncomingMessage, Server, ServerResponse } from "http"
-import { AddressInfo } from "net"
 import { AppAdapter } from "./AppAdapter"
 import { AppUpdater, DownloadUpdateOptions } from "./AppUpdater"
 import { ResolvedUpdateFileInfo, UpdateDownloadedEvent } from "./main"
@@ -87,7 +86,7 @@ export class MacUpdater extends AppUpdater {
     const log = this._logger
     const logContext = `fileToProxy=${zipFileInfo.url.href}`
     this.debug(`Creating proxy server for native Squirrel.Mac (${logContext})`)
-    if (typeof this.server !== 'undefined') {
+    if (typeof this.server !== "undefined") {
       this.server.close()
     }
     this.server = createServer()
@@ -98,8 +97,11 @@ export class MacUpdater extends AppUpdater {
 
     // must be called after server is listening, otherwise address is null
     const getServerUrl = (): string => {
-      const address = this.server!.address() as AddressInfo
-      return `http://127.0.0.1:${address.port}`
+      const address = this.server!.address()
+      if (typeof address === "string") {
+        return address
+      }
+      return `http://127.0.0.1:${address?.port}`
     }
 
     return await new Promise<Array<string>>((resolve, reject) => {
@@ -119,7 +121,7 @@ export class MacUpdater extends AppUpdater {
 
         // verify auth credentials
         const base64Credentials = request.headers.authorization!.split(" ")[1]
-        const credentials = Buffer.from(base64Credentials, "base64").toString("ascii");
+        const credentials = Buffer.from(base64Credentials, "base64").toString("ascii")
         const [username, password] = credentials.split(":")
         if (username !== "autoupdater" || password !== pass) {
           response.statusCode = 401

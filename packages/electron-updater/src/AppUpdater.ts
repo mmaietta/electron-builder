@@ -381,7 +381,6 @@ export abstract class AppUpdater extends EventEmitter {
       )
       this.emit("update-not-available", updateInfo)
       return {
-        versionInfo: updateInfo,
         updateInfo,
       }
     }
@@ -392,7 +391,6 @@ export abstract class AppUpdater extends EventEmitter {
     const cancellationToken = new CancellationToken()
     //noinspection ES6MissingAwait
     return {
-      versionInfo: updateInfo,
       updateInfo,
       cancellationToken,
       downloadPromise: this.autoDownload ? this.downloadUpdate(cancellationToken) : null,
@@ -582,7 +580,7 @@ export abstract class AppUpdater extends EventEmitter {
       // NodeJS URL doesn't decode automatically
       const urlPath = decodeURIComponent(taskOptions.fileInfo.url.pathname)
       if (urlPath.endsWith(`.${taskOptions.fileExtension}`)) {
-        return path.posix.basename(urlPath)
+        return path.basename(urlPath)
       } else {
         // url like /latest, generate name
         return `update.${taskOptions.fileExtension}`
