@@ -63,7 +63,7 @@ test.ifEnv(process.env.BITBUCKET_TOKEN)("file url bitbucket", async () => {
   const options: BitbucketOptions = {
     provider: "bitbucket",
     owner: "mike-m",
-    repo: "electron-builder-test",
+    slug: "electron-builder-test",
   }
   updater.addAuthHeader(BitbucketPublisher.convertAppPassword(options.owner, process.env.BITBUCKET_TOKEN!))
   updater.updateConfigPath = await writeUpdateConfig(options)

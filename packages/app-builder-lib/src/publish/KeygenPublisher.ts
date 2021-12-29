@@ -7,7 +7,7 @@ import { configureRequestOptions, HttpExecutor, parseJson } from "builder-util-r
 import { getCompleteExtname } from "../util/filename"
 
 export class KeygenPublisher extends HttpPublisher {
-  readonly providerName = "Keygen"
+  readonly providerName = "keygen"
   readonly hostname = "api.keygen.sh"
 
   private readonly info: KeygenOptions

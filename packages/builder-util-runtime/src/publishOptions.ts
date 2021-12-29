@@ -105,9 +105,20 @@ export interface GithubOptions extends PublishConfiguration {
   readonly protocol?: "https" | "http" | null
 
   /**
+   * The access token to support auto-update from private github repositories. Never specify it in the configuration files. Only for [setFeedURL](/auto-update#appupdatersetfeedurloptions).
+   */
+  readonly token?: string | null
+
+  /**
    * Whether to use private github auto-update provider if `GH_TOKEN` environment variable is defined. See [Private GitHub Update Repo](/auto-update#private-github-update-repo).
    */
   readonly private?: boolean | null
+
+  /**
+   * The channel.
+   * @default latest
+   */
+  readonly channel?: string | null
 
   /**
    * The type of release. By default `draft` release will be created.
@@ -208,9 +219,19 @@ export interface BitbucketOptions extends PublishConfiguration {
   readonly owner: string
 
   /**
-   * Repository name
+   * The access token to support auto-update from private bitbucket repositories.
    */
-  readonly repo: string
+  readonly token?: string | null
+
+  /**
+   * The user name to support auto-update from private bitbucket repositories.
+   */
+  readonly username?: string | null
+
+  /**
+   * Repository slug/name
+   */
+  readonly slug: string
 
   /**
    * The channel.
@@ -231,7 +252,7 @@ export interface SnapStoreOptions extends PublishConfiguration {
   /**
    * snapcraft repo name
    */
-  readonly repo: string
+  readonly repo?: string
 
   /**
    * The list of channels the snap would be released.

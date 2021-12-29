@@ -484,12 +484,6 @@ async function getResolvedPublishConfig(
   options = { ...options }
   expandPublishConfig(options, platformPackager, packager, arch)
 
-  if ((options as any).token != null) {
-    throw new Error(
-      '"token" specified in the publish options. It should be only provided via env variable for publish and during runtime via [addAuthHeader](module:electron-updater/out/AppUpdater.AppUpdater+addAuthHeader).'
-    )
-  }
-
   let channelFromAppVersion: string | null = null
   if (
     (options as GenericServerOptions).channel == null &&

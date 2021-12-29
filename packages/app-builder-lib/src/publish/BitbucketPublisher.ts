@@ -7,7 +7,7 @@ import { configureRequestOptions, HttpExecutor } from "builder-util-runtime"
 import * as FormData from "form-data"
 import { readFile } from "fs/promises"
 export class BitbucketPublisher extends HttpPublisher {
-  readonly providerName = "Bitbucket"
+  readonly providerName = "bitbucket"
   readonly hostname = "api.bitbucket.org"
 
   private readonly info: BitbucketOptions
@@ -17,7 +17,9 @@ export class BitbucketPublisher extends HttpPublisher {
   constructor(context: PublishContext, info: BitbucketOptions) {
     super(context)
 
-    const token = process.env.BITBUCKET_TOKEN
+    const token = info.token || process.env.BITBUCKET_TOKEN || null
+    const username = info.username || process.env.BITBUCKET_USERNAME || null
+
     if (isEmptyOrSpaces(token)) {
       throw new InvalidConfigurationError(`Bitbucket token is not set using env "BITBUCKET_TOKEN" (see https://www.electron.build/configuration/publish#BitbucketOptions)`)
     }

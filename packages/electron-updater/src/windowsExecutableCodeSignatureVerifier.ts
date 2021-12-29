@@ -1,4 +1,4 @@
-import { compareCertDnToPublisherDn } from "builder-util-runtime"
+import { parseDn } from "builder-util-runtime"
 import { execFile, execFileSync } from "child_process"
 import * as os from "os"
 import { Logger } from "./main"
@@ -39,7 +39,7 @@ export function verifySignature(publisherNames: Array<string>, unescapedTempUpda
         "-InputFormat",
         "None",
         "-Command",
-        `Get-AuthenticodeSignature -LiteralPath '${tempUpdateFile}' | ConvertTo-Json -Compress | ForEach-Object { [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($_)) }`,
+        `Get-AuthenticodeSignature '${tempUpdateFile}' | ConvertTo-Json -Compress | ForEach-Object { [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($_)) }`,
       ],
       {
         timeout: 20 * 1000,
@@ -54,19 +54,18 @@ export function verifySignature(publisherNames: Array<string>, unescapedTempUpda
 
           const data = parseOut(Buffer.from(stdout, "base64").toString("utf-8"))
           if (data.Status === 0) {
-            for (const name of publisherNames) {
-              if (compareCertDnToPublisherDn(data.SignerCertificate.Subject, name)) {
-                resolve(null)
-                return
-              }
+            const name = parseDn(data.SignerCertificate.Subject).get("CN")!
+            if (publisherNames.includes(name)) {
+              resolve(null)
+              return
             }
           }
 
           const result = `publisherNames: ${publisherNames.join(" | ")}, raw info: ` + JSON.stringify(data, (name, value) => (name === "RawData" ? undefined : value), 2)
           logger.warn(`Sign verification failed, installer signed with incorrect certificate: ${result}`)
           resolve(result)
-        } catch (e: any) {
-          handleError(logger, e, null)
+        } catch (e) {
+          logger.warn(`Cannot execute Get-AuthenticodeSignature: ${error}. Ignoring signature validation due to unknown error.`)
           resolve(null)
           return
         }
@@ -115,7 +114,8 @@ function handleError(logger: Logger, error: Error | null, stderr: string | null)
   }
 
   if (stderr) {
-    throw new Error(`Cannot execute Get-AuthenticodeSignature, stderr: ${stderr}. Failing signature validation due to unknown stderr.`)
+    logger.warn(`Cannot execute Get-AuthenticodeSignature, stderr: ${stderr}. Ignoring signature validation due to unknown stderr.`)
+    return
   }
 }
 
