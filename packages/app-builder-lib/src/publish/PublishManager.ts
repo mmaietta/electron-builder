@@ -523,8 +523,8 @@ async function getResolvedPublishConfig(
     return options
   }
 
-  let owner = (options as GithubOptions | BitbucketOptions).owner
-  let project = (options as GithubOptions | BitbucketOptions).repo
+  let owner = isGithub ? (options as GithubOptions).owner : (options as BitbucketOptions).owner
+  let project = isGithub ? (options as GithubOptions).repo : (options as BitbucketOptions).slug
 
   if (isGithub && owner == null && project != null) {
     const index = project.indexOf("/")
@@ -573,6 +573,6 @@ async function getResolvedPublishConfig(
     return { owner, repo: project, ...options } as GithubOptions
   } else {
     //tslint:disable-next-line:no-object-literal-type-assertion
-    return { owner, package: project, ...options } as BintrayOptions
+    return { owner, slug: project, ...options } as BitbucketOptions
   }
 }

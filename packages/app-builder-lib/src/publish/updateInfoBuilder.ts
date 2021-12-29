@@ -1,7 +1,8 @@
 import BluebirdPromise from "bluebird-lst"
 import { Arch, log, safeStringifyJson, serializeToYaml } from "builder-util"
-import { GenericServerOptions, PublishConfiguration, UpdateInfo } from "builder-util-runtime"
+import { GenericServerOptions, PublishConfiguration, UpdateInfo, WindowsUpdateInfo } from "builder-util-runtime"
 import { outputFile, outputJson, readFile } from "fs-extra"
+import { Lazy } from "lazy-val"
 import * as path from "path"
 import * as semver from "semver"
 import { Platform } from "../core"
@@ -105,6 +106,7 @@ export async function createUpdateInfoTasks(event: ArtifactCreated, _publishConf
 
   const outDir = event.target!.outDir
   const version = packager.appInfo.version
+  const sha2 = new Lazy<string>(() => hashFile(event.file, "sha256", "hex"))
   const isMac = packager.platform === Platform.MAC
   const createdFiles = new Set<string>()
   const sharedInfo = await createUpdateInfo(version, event, await getReleaseInfo(packager))
