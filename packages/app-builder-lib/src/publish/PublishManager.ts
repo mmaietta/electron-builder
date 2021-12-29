@@ -565,5 +565,14 @@ async function getResolvedPublishConfig(
     }
   }
 
-  return { owner, repo: project, ...options } as GithubOptions | BitbucketOptions
+  if (isGithub) {
+    if ((options as GithubOptions).token != null && !(options as GithubOptions).private) {
+      log.warn('"token" specified in the github publish options. It should be used only for [setFeedURL](module:electron-updater/out/AppUpdater.AppUpdater+setFeedURL).')
+    }
+    //tslint:disable-next-line:no-object-literal-type-assertion
+    return { owner, repo: project, ...options } as GithubOptions
+  } else {
+    //tslint:disable-next-line:no-object-literal-type-assertion
+    return { owner, package: project, ...options } as BintrayOptions
+  }
 }

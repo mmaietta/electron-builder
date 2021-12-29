@@ -119,12 +119,22 @@ export async function createUpdateInfoTasks(event: ArtifactCreated, _publishConf
     let isElectronUpdater1xCompatibility = computeIsisElectronUpdater1xCompatibility(electronUpdaterCompatibility, publishConfiguration, packager.info)
 
     let info = sharedInfo
+    // noinspection JSDeprecatedSymbols
+    if (isElectronUpdater1xCompatibility && packager.platform === Platform.WINDOWS) {
+      info = {
+        ...info,
+      }
+      // noinspection JSDeprecatedSymbols
+      ;(info as WindowsUpdateInfo).sha2 = await sha2.value
+    }
+
     if (event.safeArtifactName != null && publishConfiguration.provider === "github") {
       const newFiles = info.files.slice()
       newFiles[0].url = event.safeArtifactName
       info = {
         ...info,
         files: newFiles,
+        path: event.safeArtifactName,
       }
     }
 

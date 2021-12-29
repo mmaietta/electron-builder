@@ -48,6 +48,12 @@ export interface UpdateInfo {
 
   readonly files: Array<UpdateFileInfo>
 
+  /** @deprecated */
+  readonly path: string
+
+  /** @deprecated */
+  readonly sha512: string
+
   /**
    * The release name.
    */
@@ -71,4 +77,10 @@ export interface UpdateInfo {
 
 export interface WindowsUpdateInfo extends UpdateInfo {
   packages?: { [arch: string]: PackageFileInfo } | null
+
+  /**
+   * @deprecated
+   * @private
+   */
+  sha2?: string
 }
