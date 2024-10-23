@@ -17,7 +17,7 @@ jobs:
     
     steps:
       - name: Checkout code repository
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       
       - name: Login to DockerHub
         uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20 # v3 
