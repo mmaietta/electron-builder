@@ -685,11 +685,11 @@ importers:
         specifier: ^29.7.0
         version: 29.7.0(@babel/core@7.24.9)
       esbuild:
-        specifier: ^0.12.14
-        version: 0.12.29
+        specifier: ^0.25.0
+        version: 0.25.0
       esbuild-jest:
         specifier: ^0.5.0
-        version: 0.5.0(esbuild@0.12.29)
+        version: 0.5.0(esbuild@0.25.0)
       fast-xml-parser:
         specifier: 4.4.1
         version: 4.4.1
@@ -1650,8 +1650,8 @@ packages:
     resolution: {integrity: sha512-Qkzpg2s9GnVV2I2BjRksUi43U5e6+zaQMcjoJy0C+C5oxaKl+fmckGDQFtRpZpZV0NQekuZZ+tGz7EA9TVnQtQ==}
     engines: {node: '>=12'}
 
-  '@electron/node-gyp@https://codeload.github.com/electron/node-gyp/tar.gz/06b29aafb7708acef8b3669835c8a7857ebc92d2':
-    resolution: {tarball: https://codeload.github.com/electron/node-gyp/tar.gz/06b29aafb7708acef8b3669835c8a7857ebc92d2}
+  '@electron/node-gyp@git+https://git@github.com:electron/node-gyp.git#06b29aafb7708acef8b3669835c8a7857ebc92d2':
+    resolution: {commit: 06b29aafb7708acef8b3669835c8a7857ebc92d2, repo: git@github.com:electron/node-gyp.git, type: git}
     version: 10.2.0-electron.1
     engines: {node: '>=12.13.0'}
     hasBin: true
@@ -3507,10 +3507,6 @@ packages:
     resolution: {integrity: sha512-AMZZCdEpXfNVOIDvURlqYyHwC8qC1/BFjgsrOiSL1eyiIArVtHL8YAC83Shhn16cYYoAWEW17yZn0W/RJKJKHQ==}
     peerDependencies:
       esbuild: '>=0.8.50'
-
-  esbuild@0.12.29:
-    resolution: {integrity: sha512-w/XuoBCSwepyiZtIRsKsetiLDUVGPVw1E/R3VTFSecIy8UR7Cq3SOtwKHJMFoVqqVG36aGkzh4e8BvpO1Fdc7g==}
-    hasBin: true
 
   esbuild@0.25.0:
     resolution: {integrity: sha512-BXq5mqc8ltbaN34cDqWuYKyNhX8D/Z0J1xdtdQ8UcIIIyJyz+ZMKUt58tF3SrZ85jcfN/PZYhjR5uDQAYNVbuw==}
@@ -7762,7 +7758,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@electron/node-gyp@https://codeload.github.com/electron/node-gyp/tar.gz/06b29aafb7708acef8b3669835c8a7857ebc92d2':
+  '@electron/node-gyp@git+https://git@github.com:electron/node-gyp.git#06b29aafb7708acef8b3669835c8a7857ebc92d2':
     dependencies:
       env-paths: 2.2.1
       exponential-backoff: 3.1.2
@@ -7771,7 +7767,7 @@ snapshots:
       make-fetch-happen: 10.2.1
       nopt: 6.0.0
       proc-log: 2.0.1
-      semver: 7.6.3
+      semver: 7.7.1
       tar: 6.2.1
       which: 2.0.2
     transitivePeerDependencies:
@@ -7799,7 +7795,7 @@ snapshots:
 
   '@electron/rebuild@3.7.0':
     dependencies:
-      '@electron/node-gyp': https://codeload.github.com/electron/node-gyp/tar.gz/06b29aafb7708acef8b3669835c8a7857ebc92d2
+      '@electron/node-gyp': git+https://git@github.com:electron/node-gyp.git#06b29aafb7708acef8b3669835c8a7857ebc92d2
       '@malept/cross-spawn-promise': 2.0.0
       chalk: 4.1.2
       debug: 4.3.7
@@ -8246,7 +8242,7 @@ snapshots:
   '@npmcli/fs@2.1.2':
     dependencies:
       '@gar/promisify': 1.1.3
-      semver: 7.6.3
+      semver: 7.7.1
 
   '@npmcli/move-file@2.0.1':
     dependencies:
@@ -8835,7 +8831,7 @@ snapshots:
 
   agent-base@6.0.2:
     dependencies:
-      debug: 4.3.7
+      debug: 4.4.0
     transitivePeerDependencies:
       - supports-color
 
@@ -9885,16 +9881,14 @@ snapshots:
   es6-error@4.1.1:
     optional: true
 
-  esbuild-jest@0.5.0(esbuild@0.12.29):
+  esbuild-jest@0.5.0(esbuild@0.25.0):
     dependencies:
       '@babel/core': 7.24.9
       '@babel/plugin-transform-modules-commonjs': 7.24.8(@babel/core@7.24.9)
       babel-jest: 26.6.3(@babel/core@7.24.9)
-      esbuild: 0.12.29
+      esbuild: 0.25.0
     transitivePeerDependencies:
       - supports-color
-
-  esbuild@0.12.29: {}
 
   esbuild@0.25.0:
     optionalDependencies:
@@ -10508,7 +10502,7 @@ snapshots:
     dependencies:
       '@tootallnate/once': 2.0.0
       agent-base: 6.0.2
-      debug: 4.3.7
+      debug: 4.4.0
     transitivePeerDependencies:
       - supports-color
 
@@ -10527,7 +10521,7 @@ snapshots:
   https-proxy-agent@5.0.1:
     dependencies:
       agent-base: 6.0.2
-      debug: 4.3.7
+      debug: 4.4.0
     transitivePeerDependencies:
       - supports-color
 
@@ -10817,7 +10811,7 @@ snapshots:
       '@babel/parser': 7.26.2
       '@istanbuljs/schema': 0.1.3
       istanbul-lib-coverage: 3.2.2
-      semver: 7.6.3
+      semver: 7.7.1
     transitivePeerDependencies:
       - supports-color
 
@@ -11381,7 +11375,7 @@ snapshots:
 
   make-dir@4.0.0:
     dependencies:
-      semver: 7.6.3
+      semver: 7.7.1
 
   make-error@1.3.6: {}
 
@@ -12401,7 +12395,7 @@ snapshots:
   socks-proxy-agent@7.0.0:
     dependencies:
       agent-base: 6.0.2
-      debug: 4.3.7
+      debug: 4.4.0
       socks: 2.8.4
     transitivePeerDependencies:
       - supports-color
